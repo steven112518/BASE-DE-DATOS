@@ -5,14 +5,16 @@ use las_5_farmas
 CREATE TABLE Cliente (
     IdCliente INT IDENTITY PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
-   DNI VARCHAR(8) NOT NULL UNIQUE,
+    DNI CHAR(8) NOT NULL UNIQUE,
+   Telefono CHAR(9) NOT NULL UNIQUE,
   
 );
 
 CREATE TABLE Empleado (
     IdEmpleado INT IDENTITY PRIMARY KEY,
     Nombre VARCHAR(100),
-   Usuario VARCHAR(50) NOT NULL UNIQUE,
+    Usuario VARCHAR(50) NOT NULL UNIQUE,
+    Telefono Char(9) NOT NULL UNIQUE,
     Password VARCHAR(50)
 );
 CREATE TABLE Producto (
@@ -35,7 +37,8 @@ CREATE TABLE DetalleVenta (
     IdVenta INT,
     IdProducto INT,
     Cantidad INT,
-    Precio DECIMAL(10,2),
+    Precio DECIMAL(10,2) NOT NULL,
+    Total DECIMAL(10,2) NOT NULL
 
     FOREIGN KEY (IdVenta) REFERENCES Venta(IdVenta),
     FOREIGN KEY (IdProducto) REFERENCES Producto(IdProducto)
@@ -65,8 +68,8 @@ CREATE TABLE DetalleCompra (
     FOREIGN KEY (IdCompra) REFERENCES Compra(IdCompra),
     FOREIGN KEY (IdProducto) REFERENCES Producto(IdProducto)
 );
-INSERT INTO Empleado (Nombre, Usuario, Password)
-VALUES ('Administrador', 'admin', '123');
+INSERT INTO Empleado (Nombre, Usuario,Telefono ,Password)
+VALUES ('Administrador', 'admin' ,'909090900' ,'123');
 INSERT INTO Proveedor (Nombre, Telefono) VALUES
 ('Farma Perú', '987654321'),
 ('Medic Center', '912345678'),
@@ -267,9 +270,7 @@ DROP TABLE Producto;
 DROP TABLE Proveedor;
 
 
--- =============================================
--- INSERT: Compras y DetalleCompra
--- =============================================
+
 
 select *from DetalleCompra
 select *from Compra
@@ -318,3 +319,12 @@ INSERT INTO DetalleCompra (IdCompra, IdProducto, Cantidad, Precio) VALUES
 (5, 31, 100, 2.28),
 (5, 36,  80, 4.80);
 
+UPDATE Cliente
+SET Telefono = '9' + RIGHT('00000000' + CAST(
+    ABS(CHECKSUM(NEWID())) % 100000000
+AS VARCHAR), 8)
+WHERE Telefono IS NULL OR Telefono = '';
+
+UPDATE DetalleVenta
+SET Total = Cantidad * Precio;
+select * from DetalleVenta
