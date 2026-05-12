@@ -6,13 +6,13 @@ CREATE TABLE Cliente (
     IdCliente INT IDENTITY PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
     DNI CHAR(8) NOT NULL UNIQUE,
-   Telefono CHAR(9) NOT NULL UNIQUE,
+   Telefono CHAR(9)  UNIQUE,
   
 );
 
 CREATE TABLE Empleado (
     IdEmpleado INT IDENTITY PRIMARY KEY,
-    Nombre VARCHAR(100),
+    Nombre VARCHAR(100) NOT NULL,
     Usuario VARCHAR(50) NOT NULL UNIQUE,
     Telefono Char(9) NOT NULL UNIQUE,
     Password VARCHAR(50)
@@ -38,7 +38,7 @@ CREATE TABLE DetalleVenta (
     IdProducto INT,
     Cantidad INT,
     Precio DECIMAL(10,2) NOT NULL,
-    Total DECIMAL(10,2) NOT NULL
+    Total DECIMAL(10,2)
 
     FOREIGN KEY (IdVenta) REFERENCES Venta(IdVenta),
     FOREIGN KEY (IdProducto) REFERENCES Producto(IdProducto)
@@ -64,7 +64,7 @@ CREATE TABLE DetalleCompra (
     IdProducto INT,
     Cantidad INT,
     Precio DECIMAL(10,2),
-
+    Total DECIMAL(10,2),
     FOREIGN KEY (IdCompra) REFERENCES Compra(IdCompra),
     FOREIGN KEY (IdProducto) REFERENCES Producto(IdProducto)
 );
@@ -327,4 +327,7 @@ WHERE Telefono IS NULL OR Telefono = '';
 
 UPDATE DetalleVenta
 SET Total = Cantidad * Precio;
-select * from DetalleVenta
+
+
+UPDATE DetalleCompra
+SET Total = Cantidad * Precio;
